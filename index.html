@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Launcher</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+
+    h1 { margin-bottom: 20px; }
+    h2 { margin-bottom: 10px; }
+
+    .section { margin-bottom: 32px; }
+
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    button {
+      background: #1e293b;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    .add-box input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🚀 App Launcher</h1>
+
+<div class="section">
+  <h2>Messaging</h2>
+  <div class="apps" id="messaging"></div>
+</div>
+
+<div class="section">
+  <h2>Games</h2>
+  <div class="apps" id="games"></div>
+</div>
+
+<div class="section add-box">
+  <h2>Add App</h2>
+  <input id="name" placeholder="App name">
+  <input id="url" placeholder="https://example.com">
+  <select id="category">
+    <option value="messaging">Messaging</option>
+    <option value="games">Games</option>
+  </select>
+  <button onclick="addApp()">Add</button>
+</div>
+
+<script>
+  const defaults = {
+    messaging: [
+      { name: "WhatsApp", url: "https://web.whatsapp.com" },
+      { name: "Cinny", url: "https://app.cinny.in" }
+    ],
+    games: [
+      { name: "Celeste", url: "https://celeste.r58playz.dev" },
+      { name: "Kingswod House", url: "https://kingswodhouse.org" },
+      { name: "Historical Math", url: "https://historicalmathematics.xyz" }
+    ]
+  };
+
+  let apps = JSON.parse(localStorage.getItem("apps")) || defaults;
+
+  function render() {
+    ["messaging", "games"].forEach(cat => {
+      const el = document.getElementById(cat);
+      el.innerHTML = "";
+      apps[cat].forEach(app => {
+        const b = document.createElement("button");
+        b.textContent = app.name;
+        b.onclick = () => location.href = app.url;
+        el.appendChild(b);
+      });
+    });
+    localStorage.setItem("apps", JSON.stringify(apps));
+  }
+
+  function addApp() {
+    if (!name.value || !url.value) return;
+    apps[category.value].push({
+      name: name.value.trim(),
+      url: url.value.trim()
+    });
+    name.value = "";
+    url.value = "";
+    render();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
